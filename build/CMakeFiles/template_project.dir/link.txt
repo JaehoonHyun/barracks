@@ -1,0 +1,1 @@
+/usr/bin/g++    -std=c++11 -pthread -g -O0 -Wall -fPIC  -g   CMakeFiles/template_project.dir/gtest/src/gtest-all.cc.o CMakeFiles/template_project.dir/main.cpp.o  -o template_project  -L/usr/local/aarch64/lib -rdynamic 
