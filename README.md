@@ -2,6 +2,6 @@
 
 * git clone https://github.com/JaehoonHyun/barracks.git
 * cd barracks 
-* mkdir -p build
+* mkdir -p build && cd build
 * cmake .. -DCMAKE_TOOLCHAIN_FILE=../toolchain-native.cmake -DCMAKE_TARGET=EXECUTE 
 * make
