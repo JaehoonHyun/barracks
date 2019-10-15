@@ -57,9 +57,8 @@ CMakeFiles/barracks.dir/main.cpp.o
  .././gtest/include/gtest/internal/gtest-port.h
  .././gtest/include/gtest/internal/gtest-string.h
  .././gtest/include/gtest/internal/gtest-type-util.h
- /home/test1/workspace/barracks/clay/inc/clay.h
+ .././list/list.h
  /home/test1/workspace/barracks/common/mystring.h
  /home/test1/workspace/barracks/hash/hash.h
- /home/test1/workspace/barracks/hash/list.h
- /home/test1/workspace/barracks/hash/strcommon.h
+ /home/test1/workspace/barracks/hash/serialize.h
  /home/test1/workspace/barracks/main.cpp

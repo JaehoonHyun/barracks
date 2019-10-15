@@ -18,7 +18,7 @@
 //custom header
 #include "common/mystring.h"
 #include "hash/hash.h"
-#include "clay/inc/clay.h"
+#include "hash/serialize.h"
 
 static int my_add(int a, int b)
 {

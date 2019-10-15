@@ -171,12 +171,6 @@ barracks_BINARY_DIR:STATIC=/home/test1/workspace/barracks/build
 //Value Computed by CMake
 barracks_SOURCE_DIR:STATIC=/home/test1/workspace/barracks
 
-//Value Computed by CMake
-template_project_BINARY_DIR:STATIC=/home/test1/workspace/barracks/build
-
-//Value Computed by CMake
-template_project_SOURCE_DIR:STATIC=/home/test1/workspace/barracks
-
 
 ########################
 # INTERNAL cache entries

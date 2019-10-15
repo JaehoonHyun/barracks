@@ -614,7 +614,7 @@ absl/debugging/symbolize.h
 absl/strings/str_cat.h
 .././gtest/src/absl/strings/str_cat.h
 
-/home/test1/workspace/barracks/clay/inc/clay.h
+.././list/list.h
 
 /home/test1/workspace/barracks/common/mystring.h
 
@@ -639,14 +639,12 @@ src/gtest-typed-test.cc
 /home/test1/workspace/barracks/gtest/src/src/gtest-typed-test.cc
 
 /home/test1/workspace/barracks/hash/hash.h
-list.h
-/home/test1/workspace/barracks/hash/list.h
-strcommon.h
-/home/test1/workspace/barracks/hash/strcommon.h
+list/list.h
+/home/test1/workspace/barracks/hash/list/list.h
+common/mystring.h
+/home/test1/workspace/barracks/hash/common/mystring.h
 
-/home/test1/workspace/barracks/hash/list.h
-
-/home/test1/workspace/barracks/hash/strcommon.h
+/home/test1/workspace/barracks/hash/serialize.h
 
 /home/test1/workspace/barracks/main.cpp
 ctime
@@ -673,6 +671,6 @@ common/mystring.h
 /home/test1/workspace/barracks/common/mystring.h
 hash/hash.h
 /home/test1/workspace/barracks/hash/hash.h
-clay/inc/clay.h
-/home/test1/workspace/barracks/clay/inc/clay.h
+hash/serialize.h
+/home/test1/workspace/barracks/hash/serialize.h
 

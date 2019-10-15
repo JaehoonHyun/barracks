@@ -56,10 +56,9 @@ CMakeFiles/barracks.dir/main.cpp.o: .././gtest/include/gtest/internal/gtest-port
 CMakeFiles/barracks.dir/main.cpp.o: .././gtest/include/gtest/internal/gtest-port.h
 CMakeFiles/barracks.dir/main.cpp.o: .././gtest/include/gtest/internal/gtest-string.h
 CMakeFiles/barracks.dir/main.cpp.o: .././gtest/include/gtest/internal/gtest-type-util.h
-CMakeFiles/barracks.dir/main.cpp.o: ../clay/inc/clay.h
+CMakeFiles/barracks.dir/main.cpp.o: .././list/list.h
 CMakeFiles/barracks.dir/main.cpp.o: ../common/mystring.h
 CMakeFiles/barracks.dir/main.cpp.o: ../hash/hash.h
-CMakeFiles/barracks.dir/main.cpp.o: ../hash/list.h
-CMakeFiles/barracks.dir/main.cpp.o: ../hash/strcommon.h
+CMakeFiles/barracks.dir/main.cpp.o: ../hash/serialize.h
 CMakeFiles/barracks.dir/main.cpp.o: ../main.cpp
 
