@@ -16,6 +16,7 @@
 #include "gtest/gtest.h"
 
 //custom header
+#include "common/mydebug.h"
 #include "common/mystring.h"
 #include "hash/hash.h"
 #include "hash/serialize.h"
@@ -62,7 +63,7 @@ TEST(tdd_gtest, hash_test)
     MyData *data;
     data = (MyData *)rHash->search("timestamp");
 
-    printf("age! : %d\n", data->_age);
+    LOGI("age! : %d\n", data->_age);
 }
 
 int main(int argc, char **argv)
