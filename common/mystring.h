@@ -2,7 +2,7 @@
 #define MY_STRING_H_
 
 
-static char *genString(unsigned int size)
+static char *genstring(unsigned int size)
 {
 
     char *ret = new char[size + 1];
@@ -26,6 +26,8 @@ char *kstrncpy(char *dst, const char *src, unsigned int size)
     {
         i++;
     }
+    
+    dst[i] = '\0';
 
     return dst;
 }
