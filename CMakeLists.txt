@@ -36,12 +36,13 @@ include_directories (${WORKSPACE}/gtest/include)
 #################
 file(GLOB_RECURSE COMMON_SRC_FILES ${WORKSPACE}/common/src/*.cpp)
 file(GLOB_RECURSE MY_CLAY_FILES clay/src/*.cpp)
+file(GLOB_RECURSE MY_NET_FILES net/src/*.cpp)
+file(GLOB_RECURSE G_TEST_FILES gtest/src/gtest-all.cc)
 file(GLOB_RECURSE MY_SRC_FILES src/*.cpp)
 file(GLOB_RECURSE MY_SRC_FILES src/*.cc)
-file(GLOB_RECURSE G_TEST_FILES gtest/src/gtest-all.cc)
 SET (SRC_FILES ${COMMON_SRC_FILES} 
                ${MY_CLAY_FILES}
-               ${MY_SRC_FILES}
+               ${MY_NET_FILES}
                ${G_TEST_FILES}
                )
 message("SRC_FILES: ${SRC_FILES}")
