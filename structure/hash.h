@@ -21,6 +21,10 @@ static inline my_octet4 hashing(const my_octet *src, int hsize)
 
 #define HASH_KEY_SIZE 24
 
+#ifndef HASH_SIZE
+#define MY_HASH_SIZE 65599
+#endif
+
 struct HashHeader
 {
     my_octet4 _size;
@@ -30,7 +34,7 @@ struct HashHeader
 
 struct Hash
 {
-
+    Hash() : _hsize(MY_HASH_SIZE), bucket(new List[MY_HASH_SIZE]) {}
     Hash(my_octet4 hsize) : _hsize(hsize), bucket(new List[hsize]) {}
 
     void add(HashHeader *data, my_octet4 size)
@@ -38,6 +42,11 @@ struct Hash
         data->_hashVal = hashing(data->_key, _hsize);
         data->_size = size;
         bucket[data->_hashVal].Add(data);
+    }
+
+    void add(void *key, void *data){
+        my_octet4 hashVal =  hashing((const char *)key, _hsize);
+        bucket[hashVal].Add(data);
     }
 
     void quickAdd(HashHeader *data)

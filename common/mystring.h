@@ -18,7 +18,7 @@ static char *genstring(unsigned int size)
 }
 
 
-char *kstrncpy(char *dst, const char *src, unsigned int size)
+unsigned int kstrncpy(char *dst, const char *src, unsigned int size)
 {
 
     unsigned int i = 0;
@@ -29,7 +29,7 @@ char *kstrncpy(char *dst, const char *src, unsigned int size)
     
     dst[i] = '\0';
 
-    return dst;
+    return i-1;
 }
 
 int kstrncmp(char *dst, const char *src, unsigned int size)

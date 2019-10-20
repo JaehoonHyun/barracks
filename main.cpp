@@ -22,6 +22,7 @@
 #include "clay/inc/clay.h"
 #include "clay/inc/serializeClay.h"
 #include "clay/inc/serializeHash.h"
+#include "structure/table.h"
 
 const char *ghomedir;
 
@@ -35,7 +36,39 @@ TEST(tdd_gtest, basic_gtest)
     ASSERT_EQ(2, my_add(1, 1));
 }
 
+TEST(tdd_gtest, table_index_test)
+{
 
+    printf("double : %d\n", sizeof(double));
+    printf("my_octet8 : %d\n", sizeof(my_octet8));
+
+    MyTable *table = new MyTable();
+    table->AddCol("Age", sizeof(my_octet4));
+    table->AddCol("Familiar", sizeof(my_octet8));
+    table->AddCol("Count", sizeof(my_octet2));
+    table->AddCol("PhoneNumber", sizeof(my_octet) * 16);
+    table->Commit();
+
+    // table->AddRow("%d%lf%d%s", 1000000,0.9,5231,"010-4847-8917");
+    AddRowTable(table, 1000000, 412323.0f, 5231, "010-4847-8917");
+    AddRowTable(table, 3221, 1.0f, 5231, "010-2234-1603");
+    AddRowTable(table, 3500, 1.0f, 5231, "010-8801-1603");
+    AddRowTable(table, 4500, 1.0f, 5231, "010-1222-9903");
+
+    //TODO : have to implemented
+    SearchTable(table, "Age", 3221);
+
+    //TODO : have to implemented
+    BetweenTable(table, "Age", 3221, 4000);
+
+    //TODO : have to implemented
+    IndexingTable(table, "Age", "Count");
+
+    //TODO : test performance 100,1000,10000,100000,1000000,10000000
+
+}
+
+#if 0
 TEST(tdd_gtest, memorypool_test)
 {
     struct MyData : public HashHeader
@@ -54,15 +87,6 @@ TEST(tdd_gtest, memorypool_test)
     const int HASH_SIZE = 10000;
 
     Hash *hash = new Hash(HASH_SIZE);
-
-    // hash->add(new MyData("ktjooho1", "hello"), sizeof(MyData));
-    // hash->add(new MyData("ktjooho2", "how are you today?"), sizeof(MyData));
-    // hash->add(new MyData("jaehoon1", "wow"), sizeof(MyData));
-    // hash->add(new MyData("jaehoon2", "awesome"), sizeof(MyData));
-
-    //TODO : used displacement
-    // kstrncpy(data->_key, data->key, sizeof(_key));
-    // kstrncpy(data->_talk, data->talk, sizeof(_talk));
 
     Clay clay;
 
@@ -95,6 +119,7 @@ TEST(tdd_gtest, memorypool_test)
     MyData *rddata = (MyData *)rdhash->search("ktjooho1");
     printf("rddata : [%s][%s]\n", rddata->_key, rddata->_talk);
 }
+#endif
 
 TEST(tdd_gtest, hash_test)
 {
@@ -119,7 +144,6 @@ TEST(tdd_gtest, hash_test)
     hash->add(new MyData(11), sizeof(MyData));
     hash->add(new MyData(12), sizeof(MyData));
     hash->add(new MyData(13), sizeof(MyData));
-
 }
 
 int main(int argc, char **argv)
