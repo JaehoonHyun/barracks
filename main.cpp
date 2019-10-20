@@ -42,30 +42,41 @@ TEST(tdd_gtest, table_index_test)
     printf("double : %d\n", sizeof(double));
     printf("my_octet8 : %d\n", sizeof(my_octet8));
 
-    MyTable *table = new MyTable();
-    table->AddCol("Age", sizeof(my_octet4));
-    table->AddCol("Familiar", sizeof(my_octet8));
-    table->AddCol("Count", sizeof(my_octet2));
-    table->AddCol("PhoneNumber", sizeof(my_octet) * 16);
-    table->Commit();
+    MyTable &table = *new MyTable();
+    table.AddCol("Age", sizeof(my_octet4));
+    table.AddCol("Familiar", sizeof(my_octet8));
+    table.AddCol("Count", sizeof(my_octet2));
+    table.AddCol("PhoneNumber", sizeof(my_octet) * 16);
+    table.Commit();
 
-    // table->AddRow("%d%lf%d%s", 1000000,0.9,5231,"010-4847-8917");
-    AddRowTable(table, 1000000, 412323.0f, 5231, "010-4847-8917");
-    AddRowTable(table, 3221, 1.0f, 5231, "010-2234-1603");
-    AddRowTable(table, 3500, 1.0f, 5231, "010-8801-1603");
-    AddRowTable(table, 4500, 1.0f, 5231, "010-1222-9903");
-
-    //TODO : have to implemented
-    SearchTable(table, "Age", 3221);
-
-    //TODO : have to implemented
-    BetweenTable(table, "Age", 3221, 4000);
+    table.AddRow(100, 0.9, 2221, "010-4847-8917");
+    table.AddRow(100, 0.9, 2221, "010-4847-8917");
+    table.AddRow(200, 0.9, 2221, "010-4847-8917");
+    table.AddRow(1000000, 412323.0f, 5231, "010-4847-8917");
+    table.AddRow(3221, 1.0f, 5231, "010-2234-1603");
+    table.AddRow(3500, 1.0f, 5231, "010-8801-1603");
+    table.AddRow(4500, 1.0f, 5231, "010-1222-9903");
 
     //TODO : have to implemented
-    IndexingTable(table, "Age", "Count");
+    table.SearchTable("Age", 3221);
+    table.SearchTable("Count", 5231);
+    table.SearchTable("Familar", 1.0f)
+         .SearchTable("Count", 5231)
+         .Fetch();
+
+    //TODO : have to implemented
+    table.BetweenTable("Age", 3221, 4000)
+         .Fetch();
+
+    //TODO : ComplexSearch
+    table.SearchTable("Familar", 1.0f, "Count", 5231)
+         .BetweenTable("Age",3221,4000)
+         .Fetch();
+
+    //TODO : have to implemented
+    table.IndexingTable("Age", "Count");
 
     //TODO : test performance 100,1000,10000,100000,1000000,10000000
-
 }
 
 #if 0
@@ -93,17 +104,17 @@ TEST(tdd_gtest, memorypool_test)
     MyData *mem;
     mem = (MyData *)clay.NewClay(sizeof(MyData));
     new (mem) MyData("ktjooho1", "hello");
-    hash->add(mem, sizeof(MyData));
+    hash.add(mem, sizeof(MyData));
 
     mem = (MyData *)clay.NewClay(sizeof(MyData));
     new (mem) MyData("ktjooho1", "hellohi");
-    hash->add(mem, sizeof(MyData));
+    hash.add(mem, sizeof(MyData));
 
     for (int i = 0; i < 100; i++)
     {
         mem = (MyData *)clay.NewClay(sizeof(MyData));
         new (mem) MyData(genstring(20), genstring(500));
-        hash->add(mem, sizeof(MyData));
+        hash.add(mem, sizeof(MyData));
     }
 
     assert(clay._list._count == 15);
@@ -116,8 +127,8 @@ TEST(tdd_gtest, memorypool_test)
 
     makeHash(rdhash, rdclay);
 
-    MyData *rddata = (MyData *)rdhash->search("ktjooho1");
-    printf("rddata : [%s][%s]\n", rddata->_key, rddata->_talk);
+    MyData *rddata = (MyData *)rdhash.search("ktjooho1");
+    printf("rddata : [%s][%s]\n", rddata._key, rddata._talk);
 }
 #endif
 
@@ -138,12 +149,12 @@ TEST(tdd_gtest, hash_test)
 
     const int HASH_SIZE = 10000;
 
-    Hash *hash = new Hash(HASH_SIZE);
+    Hash &hash = *new Hash(HASH_SIZE);
 
-    hash->add(new MyData(10), sizeof(MyData));
-    hash->add(new MyData(11), sizeof(MyData));
-    hash->add(new MyData(12), sizeof(MyData));
-    hash->add(new MyData(13), sizeof(MyData));
+    hash.add(new MyData(10), sizeof(MyData));
+    hash.add(new MyData(11), sizeof(MyData));
+    hash.add(new MyData(12), sizeof(MyData));
+    hash.add(new MyData(13), sizeof(MyData));
 }
 
 int main(int argc, char **argv)

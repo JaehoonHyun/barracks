@@ -1,11 +1,12 @@
 #ifndef MY_STRING_H_
 #define MY_STRING_H_
 
+#include "common/mytypes.h"
 
-static char *genstring(unsigned int size)
+static my_octet *genstring(unsigned int size)
 {
 
-    char *ret = new char[size + 1];
+    my_octet *ret = new my_octet[size + 1];
 
     for (unsigned int i = 0; i < size; i++)
     {
@@ -18,7 +19,7 @@ static char *genstring(unsigned int size)
 }
 
 
-unsigned int kstrncpy(char *dst, const char *src, unsigned int size)
+unsigned int kstrncpy(my_octet *dst, const my_octet *src, unsigned int size)
 {
 
     unsigned int i = 0;
@@ -32,7 +33,7 @@ unsigned int kstrncpy(char *dst, const char *src, unsigned int size)
     return i-1;
 }
 
-int kstrncmp(char *dst, const char *src, unsigned int size)
+int kstrncmp(my_octet *dst, const my_octet *src, unsigned int size)
 {
 
     unsigned int i = 0;

@@ -1,27 +1,29 @@
 #ifndef TERNARY_H_
 #define TERNARY_H_
 
+#include "common/mytypes.h"
+#include "structure/list.h"
 
-struct TSNode
+struct TSNodeList
 {
 
-    void *data;
-    struct TSNode *less, *equal, *greater;
+    List list;
+    struct TSNodeList *less, *equal, *greater;
     unsigned char key;
     char isFull;
 
-    TSNode() : data(0), less(0), equal(0), greater(0), key(0), isFull(0) {}
+    TSNodeList() : less(0), equal(0), greater(0), key(0), isFull(0) {}
 };
 
-struct TSTree
+struct TSTreeList
 {
-    TSNode root;
+    TSNodeList root;
 
-    void insertn(const unsigned char *str, int size, void *data)
+    void insertn(const my_octet *str, int size, void *data)
     {
         const unsigned char *ptr;
-        ptr = str;
-        TSNode *iter;
+        ptr = (const unsigned char *)str;
+        TSNodeList *iter;
 
         iter = &root;
         int i = 0;
@@ -38,11 +40,10 @@ struct TSTree
 
                 if (i == size)
                 {
-                    if (iter->data == 0)
-                        iter->data = data;
+                    iter->list.Add(data);
                     return;
                 }
-                iter->equal = new TSNode;
+                iter->equal = new TSNodeList;
                 iter = iter->equal;
             }
             else if (iter->key == *ptr)
@@ -51,31 +52,30 @@ struct TSTree
                 i++;
                 if (i == size)
                 {
-                    if (iter->data == 0)
-                        iter->data = data;
+                    iter->list.Add(data);
                     return;
                 }
                 iter = iter->equal;
             }
             else if (iter->key > *ptr)
             {
-                iter->less = new TSNode;
+                iter->less = new TSNodeList;
                 iter = iter->less;
             }
             else if (iter->key < *ptr)
             {
-                iter->greater = new TSNode;
+                iter->greater = new TSNodeList;
                 iter = iter->greater;
             }
         }
     }
 
-    void insert(const unsigned char *str, void *data)
+    void insert(const my_octet *str, void *data)
     {
 
         const unsigned char *ptr;
-        ptr = str;
-        TSNode *iter;
+        ptr = (const unsigned char *)str;
+        TSNodeList *iter;
 
         iter = &root;
         while (true)
@@ -90,11 +90,10 @@ struct TSTree
 
                 if (*ptr == '\0')
                 {
-                    if (iter->data == 0)
-                        iter->data = data;
+                    iter->list.Add(data);
                     return;
                 }
-                iter->equal = new TSNode;
+                iter->equal = new TSNodeList;
                 iter = iter->equal;
             }
             else if (iter->key == *ptr)
@@ -102,31 +101,30 @@ struct TSTree
                 ptr++;
                 if (*ptr == '\0')
                 {
-                    if (iter->data == 0)
-                        iter->data = data;
+                    iter->list.Add(data);
                     return;
                 }
                 iter = iter->equal;
             }
             else if (iter->key > *ptr)
             {
-                iter->less = new TSNode;
+                iter->less = new TSNodeList;
                 iter = iter->less;
             }
             else if (iter->key < *ptr)
             {
-                iter->greater = new TSNode;
+                iter->greater = new TSNodeList;
                 iter = iter->greater;
             }
         }
     }
 
-    TSNode *_search(const unsigned char *str)
+    TSNodeList *_search(const my_octet *str)
     {
 
+        TSNodeList *iter;
         const unsigned char *ptr;
-        TSNode *iter;
-        ptr = str;
+        ptr = (const unsigned char *)str;
 
         iter = &root;
         while (true)
@@ -143,7 +141,7 @@ struct TSTree
 
                 if (*ptr == '\0')
                 {
-                    if (iter->data != 0)
+                    if (!iter->list.IsEmpty())
                         return iter;
                     else
                         return 0;
@@ -161,13 +159,13 @@ struct TSTree
         }
     }
 
-    void *search(const unsigned char *str)
+    void *search(const my_octet *str)
     {
 
-        TSNode *node;
+        TSNodeList *node;
         if ((node = _search(str)) != 0)
         {
-            return node->data;
+            return &node->list;
         }
 
         return 0;

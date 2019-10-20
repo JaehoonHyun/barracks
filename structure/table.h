@@ -5,7 +5,7 @@
 
 #include "common/mytypes.h"
 #include "structure/hash.h"
-#include "structure/ternary.h"
+#include "structure/ternarylist.h"
 #include "clay/inc/clay.h"
 
 //columns max count : 9
@@ -17,8 +17,9 @@ struct MyTable
     my_octet format_[256];
     my_octet2 colcnt_;
     my_octet2 rowsize_;
-
-    TSTree tree[9];
+    my_octet4 rowcnt_;
+    TSTreeList tree_[9];
+    Hash root_;
 
     struct Indexing
     {
@@ -32,36 +33,13 @@ struct MyTable
     struct ColDesc
     {
 
-        const char *colname_;
-        int colpos_;
-        int colidx_;
+        const my_octet *colname_;
+        my_octet2 colpos_;
+        my_octet2 colidx_;
 
-        ColDesc(const char *colname, int colpos, int colidx)
+        ColDesc(const my_octet *colname, my_octet2 colpos, my_octet2 colidx)
             : colname_(colname), colpos_(colpos), colidx_(colidx) {}
     };
-
-    Hash root_;
-
-    void AddIndex(my_octet4 count, ...)
-    {
-        va_list ap;
-        va_start(ap, count);
-
-        my_octet4 idx;
-        my_octet4 *buf = new my_octet4;
-        *buf = 0;
-
-        for (int i = 0; i < count; i++)
-        {
-            idx = va_arg(ap, my_octet4);
-            *buf = *buf * 10 + idx;
-        }
-
-        List *list = new List();
-        list->_head._data = buf;
-
-        root_.add(buf, list);
-    }
 
     void Commit()
     {
@@ -69,24 +47,24 @@ struct MyTable
     }
 
     //no copy colname, you must be heap or constant region
-    void AddCol(const char *colname, my_octet4 csize)
+    void AddCol(const my_octet *colname, my_octet4 csize)
     {
         switch (csize)
         {
         case 1:
-            strncpy(format_ + colcnt_, "1", 1);
+            kstrncpy(format_ + colcnt_, "1", 1);
             break;
         case 2:
-            strncpy(format_ + colcnt_, "2", 1);
+            kstrncpy(format_ + colcnt_, "2", 1);
             break;
         case 4:
-            strncpy(format_ + colcnt_, "4", 1);
+            kstrncpy(format_ + colcnt_, "4", 1);
             break;
         case 8:
-            strncpy(format_ + colcnt_, "8", 1);
+            kstrncpy(format_ + colcnt_, "8", 1);
             break;
         default:
-            strncpy(format_ + colcnt_, "n", 1);
+            kstrncpy(format_ + colcnt_, "n", 1);
             break;
         }
 
@@ -96,110 +74,116 @@ struct MyTable
         colcnt_++;
         rowsize_ += csize;
     }
-};
 
-#define AddRowTable(table, ...) addRowTable(table, __VA_ARGS__)
-
-void addRowTable(MyTable *table, ...)
-{
-    va_list ap;
-    va_start(ap, table);
-
-    my_octet *row = (my_octet *)table->clay_.NewClay(table->rowsize_);
-    my_octet *pos = row;
-    for (int i = 0; table->format_[i] != '\0'; i++)
+    void AddRow(...)
     {
+        va_list ap;
+        va_start(ap, this);
 
-        switch (table->format_[i])
+        my_octet *row = (my_octet *)clay_.NewClay(rowsize_);
+        my_octet *pos = row;
+        for (int i = 0; format_[i] != '\0'; i++)
         {
-            //default word
-        case '1':
-            my_octet o1;
-            o1 = (my_octet)va_arg(ap, my_octet4);
-            *pos = o1;
-            table->tree[i].insertn(pos, 1, row);
-            pos += 1;
-            break;
-        case '2':
-            my_octet2 o2;
-            o2 = (my_octet2)va_arg(ap, my_octet4);
-            *pos = o2;
-            table->tree[i].insertn(pos, 2, row);
-            pos += 2;
-            break;
-        case '4':
-            my_octet4 o4;
-            o4 = va_arg(ap, my_octet4);
-            *pos = o4;
-            table->tree[i].insertn(pos, 4, row);
-            pos += 4;
-            break;
-        case '8':
-            my_octet8 o8;
-            o8 = va_arg(ap, double);
-            *pos = o8;
-            table->tree[i].insertn(pos, 8, row);
-            pos += 8;
-            break;
-        case 'n':
-        default:
-            my_octet *n;
-            n = va_arg(ap, my_octet *);
-            int nlen = kstrncpy(pos, n, 4096);
-            table->tree[i].insertn(pos, nlen, row);
-            pos += nlen;
-            break;
-        }
 
-    } //colcnt_
-    va_end(ap);
+            switch (format_[i])
+            {
+                //default word
+            case '1':
+                my_octet o1;
+                o1 = (my_octet)va_arg(ap, my_octet4);
+                *(my_octet *)pos = o1;
+                tree_[i].insertn(pos, 1, row);
+                pos += 1;
+                break;
+            case '2':
+                my_octet2 o2;
+                o2 = (my_octet2)va_arg(ap, my_octet4);
+                *(my_octet2 *)pos = o2;
+                tree_[i].insertn(pos, 2, row);
+                pos += 2;
+                break;
+            case '4':
+                my_octet4 o4;
+                o4 = va_arg(ap, my_octet4);
+                *(my_octet4 *)pos = o4;
+                tree_[i].insertn(pos, 4, row);
+                pos += 4;
+                break;
+            case '8':
+                double d8;
+                d8 = va_arg(ap, double);
+                my_octet8 o8;
+                o8 = *(my_octet8 *)&d8;
+                *(my_octet8 *)pos = o8;
+                tree_[i].insertn(pos, 8, row);
+                pos += 8;
+                break;
+            case 'n':
+            default:
+                my_octet *n;
+                n = va_arg(ap, my_octet *);
+                int nlen = kstrncpy(pos, n, 4096);
+                tree_[i].insertn(pos, nlen, row);
+                pos += nlen;
+                break;
+            }
 
-    //TODO: hashing ? or ternary?
-    for (int i = 0; i < table->colcnt_; i++)
-    {
-        //get colpos
-        //get row data from colpos
-        //
+        } //colcnt_
+        va_end(ap);
+
+        rowcnt_++;
     }
-}
 
-//TODO : have to implemented
-void SearchTable(MyTable *table, ...)
-{
-
-    va_list ap;
-    va_start(ap, table);
-
-    my_octet *row = (my_octet *)table->clay_.NewClay(table->rowsize_);
-    my_octet *pos = row;
-    for (int i = 0; table->format_[i] != '\0'; i++)
+    //TODO : have to implemented
+    MyTable &SearchTable(const my_octet *colname, ...)
     {
 
+        va_list ap;
+        va_start(ap, this);
 
-    } //colcnt_
-    va_end(ap);
-}
-
-//TODO : have to implemented
-void BetweenTable(MyTable *table, ...)
-{
-
-    va_list ap;
-    va_start(ap, table);
-
-    my_octet *row = (my_octet *)table->clay_.NewClay(table->rowsize_);
-    my_octet *pos = row;
-    for (int i = 0; table->format_[i] != '\0'; i++)
-    {
+        my_octet *row = (my_octet *)clay_.NewClay(rowsize_);
+        my_octet *pos = row;
         
+        //PSEUDO CODE
+        //find format using colname
+        //find index using colname
+        //value = va_arg(ap, format)
+        //search using root_[index].search(value)
+        //if list is nil, create and search save to list
 
-    } //colcnt_
-    va_end(ap);
-}
+        va_end(ap);
 
-void IndexingTable(MyTable *table, ...){
-    
-}
+        return *this;
+    }
 
+    //must copy
+    List* Fetch(){
+        return new List();
+    }
+
+    //TODO : have to implemented
+    MyTable &BetweenTable(...)
+    {
+
+        va_list ap;
+        va_start(ap, this);
+
+        my_octet *row = (my_octet *)clay_.NewClay(rowsize_);
+        my_octet *pos = row;
+        for (int i = 0; format_[i] != '\0'; i++)
+        {
+
+        } //colcnt_
+        va_end(ap);
+
+        return *this;
+    }
+
+    MyTable &IndexingTable(...)
+    {
+
+        return *this;
+    }
+};
 
 #endif
